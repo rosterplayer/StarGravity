@@ -8,10 +8,10 @@ namespace StarGravity.UI.MainMenu.Shop
   public class Shop : MonoBehaviour
   {
     public TextMeshProUGUI BonusText;
-    private ProgressService _progress;
+    private IProgressService _progress;
 
     [Inject]
-    public void Construct(ProgressService progress)
+    public void Construct(IProgressService progress)
     {
       _progress = progress;
       SetBonusText();

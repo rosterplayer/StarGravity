@@ -12,6 +12,10 @@ namespace StarGravity.Infrastructure.AssetManagement
     public GameObject[] Stars;
     public GameObject CaptureBeam;
 
+    [Header("VFX")] 
+    public GameObject ShipCrashFX;
+    public GameObject AsteroidCrashFX;
+
     [Header("UI")]
     public GameObject GameOverPopup;
 

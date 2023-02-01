@@ -1,10 +1,14 @@
 ﻿using System;
+using Leopotam.Ecs;
+using StarGravity.GamePlay.Common.Components;
+using StarGravity.GamePlay.Utilities;
 using StarGravity.Infrastructure.Services;
 using StarGravity.Infrastructure.Services.Ad;
 using StarGravity.Infrastructure.Services.Progress;
 using StarGravity.UI.MainMenu.Shop.Enhancements;
 using UnityEngine;
 using VContainer;
+using Voody.UniLeo;
 
 namespace StarGravity.GamePlay.Player
 {
@@ -15,15 +19,15 @@ namespace StarGravity.GamePlay.Player
     public int HealthPoints;
 
     private float _constantHealthTimeRemains;
-    private AdService _adService;
-    private ProgressService _progressService;
+    private IAdService _adService;
+    private IProgressService _progressService;
 
     public event Action<int> HealthChanged;
     public event Action OnDied;
     public event Action<float> OnConstantHealth;
 
     [Inject]
-    public void Construct(AdService adService, ProgressService progressService)
+    public void Construct(IAdService adService, IProgressService progressService)
     {
       _progressService = progressService;
       _adService = adService;
@@ -61,7 +65,10 @@ namespace StarGravity.GamePlay.Player
       if (HealthPoints <= 0)
       {
         OnDied?.Invoke();
-        Destroy(gameObject);
+        if (gameObject.GetComponent<ConvertToEntity>().TryGetEcsEntity(out EcsEntity entity))
+        {
+          entity.Get<ForDestroy>();
+        }
       }
     }
     

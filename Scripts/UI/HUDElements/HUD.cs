@@ -23,12 +23,12 @@ namespace StarGravity.UI.HUDElements
 
     private StarShip _playerShip;
     private Health _health;
-    private PopupFactory _popupFactory;
-    private GameLevelProgressService _levelProgress;
-    private AdService _adService;
+    private IPopupFactory _popupFactory;
+    private IGameLevelProgressService _levelProgress;
+    private IAdService _adService;
 
     [Inject]
-    public void Construct(PlayerShipFactory playerShipFactory, PopupFactory popupFactory, GameLevelProgressService levelProgress, AdService adService)
+    public void Construct(IPlayerShipFactory playerShipFactory, IPopupFactory popupFactory, IGameLevelProgressService levelProgress, IAdService adService)
     {
       _adService = adService;
       _levelProgress = levelProgress;

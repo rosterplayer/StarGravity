@@ -9,8 +9,8 @@ namespace StarGravity.Infrastructure.Services.SDK
 {
   public class YandexPlatformSDKWrapper : ISDKWrapper
   {
-    private readonly ProgressService _progress;
-    private readonly LocalizationService _localService;
+    private readonly IProgressService _progress;
+    private readonly ILocalizationService _localService;
     public bool SDKInited => YandexSDK.Instance.Inited;
 
     public event Action OnUserDataReceived;
@@ -24,7 +24,7 @@ namespace StarGravity.Infrastructure.Services.SDK
     public event Action<string> OnPurchaseFailed;
     public event Action ShowAuthInvite;
 
-    public YandexPlatformSDKWrapper(ProgressService progressService, LocalizationService localService)
+    public YandexPlatformSDKWrapper(IProgressService progressService, ILocalizationService localService)
     {
       _localService = localService;
       _progress = progressService;

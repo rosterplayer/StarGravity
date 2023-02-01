@@ -23,7 +23,12 @@ namespace StarGravity.Infrastructure.Services.Input
       // if (UnityEngine.Input.touchCount > 0)
       //   OnMobileTouch();
       // else
-        OnMouseClick();
+        //OnMouseClick();
+    }
+
+    public void Run()
+    {
+      OnMouseClick();
     }
 
     public void GainControl() => _blockExternalInput = false;

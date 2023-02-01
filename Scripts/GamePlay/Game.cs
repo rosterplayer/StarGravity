@@ -1,7 +1,9 @@
 ﻿using System;
+using Leopotam.Ecs;
 using StarGravity.GamePlay.Planets;
 using StarGravity.GamePlay.Player;
-using StarGravity.GamePlay.Routes;
+using StarGravity.GamePlay.Player.Components;
+using StarGravity.GamePlay.Utilities;
 using StarGravity.Infrastructure.Factories;
 using StarGravity.Infrastructure.Services.Ad;
 using StarGravity.Infrastructure.Services.Input;
@@ -9,36 +11,34 @@ using StarGravity.Infrastructure.Services.Progress;
 using StarGravity.Infrastructure.Services.SDK;
 using StarGravity.Infrastructure.Services.Sound;
 using StarGravity.Infrastructure.Services.Tutorial;
-using UnityEngine;
 using VContainer.Unity;
+using Voody.UniLeo;
+using Health = StarGravity.GamePlay.Player.Health;
 
 namespace StarGravity.GamePlay
 {
   public class Game : IInitializable, IStartable, IDisposable
   {
     private readonly PlanetSpawner _planetSpawner;
-    private readonly PlayerShipFactory _playerShipFactory;
+    private readonly IPlayerShipFactory _playerShipFactory;
     private readonly SoundService _soundService;
     private readonly ISDKWrapper _sdk;
     private readonly IInputService _inputService;
-    private readonly AdService _adService;
-    private readonly UFOSpawner _ufoSpawner;
-    private readonly GameLevelProgressService _levelProgressService;
+    private readonly IAdService _adService;
+    private readonly IGameLevelProgressService _levelProgressService;
     private readonly TutorialService _tutorial;
 
     private Health _health;
-    private PlanetMove _planetMove;
-    private int _ship;
+    private int _shipNumber;
 
     public Game(
       PlanetSpawner planetSpawner,
-      PlayerShipFactory playerFactory,
+      IPlayerShipFactory playerFactory,
       SoundService soundService,
       ISDKWrapper sdk,
       IInputService inputService,
-      AdService adService,
-      UFOSpawner ufoSpawner,
-      GameLevelProgressService levelProgressService,
+      IAdService adService,
+      IGameLevelProgressService levelProgressService,
       TutorialService tutorial
       )
     {
@@ -48,7 +48,6 @@ namespace StarGravity.GamePlay
       _sdk = sdk;
       _inputService = inputService;
       _adService = adService;
-      _ufoSpawner = ufoSpawner;
       _levelProgressService = levelProgressService;
       _tutorial = tutorial;
     }
@@ -62,35 +61,24 @@ namespace StarGravity.GamePlay
     public void Start()
     {
       _soundService.PlayMusic(SceneType.Game);
-      _tutorial.ShowTutorial(_ship);
+      _tutorial.ShowTutorial(_shipNumber);
+      _inputService.GainControl();
     }
 
     private void SpawnShipAndPlanets()
     {
-      _ship = _playerShipFactory.SpawnPlayerShip();
+      _shipNumber = _playerShipFactory.Create();
       StarShip starShip = _playerShipFactory.PlayerShip.GetComponent<StarShip>();
-      starShip.Initialize(_planetSpawner.FirstSpawn());
-      starShip.PlanetReached += SetUfoEvent;
-      
+      if (starShip.GetComponent<ConvertToEntity>().TryGetEcsEntity(out EcsEntity entity))
+      {
+        ref var reachedPlanet = ref entity.Get<ReachedPlanet>();
+        reachedPlanet.Planet = _planetSpawner.FirstSpawn();
+      }
+
       _planetSpawner.SpawnNext();
       
-      _levelProgressService.Subscribe(starShip);
-
       _health = _playerShipFactory.PlayerShip.GetComponent<Health>();
       _health.OnDied += GameOver;
-    }
-
-    private void SetUfoEvent(GameObject planet)
-    {
-      // Call UFO spawn
-      _planetMove = planet.GetComponentInParent<PlanetMove>();
-      _planetMove.OnStopMoving += SpawnUfo;
-    }
-
-    private void SpawnUfo()
-    {
-      _ufoSpawner.Spawn(_levelProgressService.LevelProgress.Systems);
-      _planetMove.OnStopMoving -= SpawnUfo;
     }
 
     private void GameOver()

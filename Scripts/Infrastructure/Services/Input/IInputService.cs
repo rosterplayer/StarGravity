@@ -8,5 +8,6 @@
     bool DownInput { get; }
     public void GainControl();
     public void ReleaseControl();
+    void Run();
   }
 }

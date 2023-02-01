@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using StarGravity.Infrastructure.Services;
-using StarGravity.Infrastructure.Services.Input;
 using StarGravity.Infrastructure.Services.Sound;
 using UnityEngine;
 using VContainer;
@@ -12,32 +11,37 @@ namespace StarGravity.GamePlay.Player.Perks
     public Rigidbody2D Rigidbody2D;
     public ParticleSystem RightEngineFx;
     public ParticleSystem LeftEngineFx;
-    
-    private IInputService _inputService;
+
     private SoundService _soundService;
 
     [Inject]
-    public void Construct(IInputService inputService, SoundService soundService)
+    public void Construct(SoundService soundService)
     {
       _soundService = soundService;
-      _inputService = inputService;
     }
 
-    protected override void OnUpdate()
+    private void Awake()
     {
-      if (PlayerShip.PlayerState != PlayerState.OnFLy || IsCooldown())
-        return;
+      PlayerShip.UpPressed += OnUpPressed;
+      PlayerShip.DownPressed += OnDownPressed;
+    }
 
-      if (_inputService.UpInput)
-      {
-        Move(-transform.right);
-        LeftEngineFx.Play();
-      }
-      else if (_inputService.DownInput)
-      {
-        Move(transform.right);
-        RightEngineFx.Play();
-      }
+    private void OnUpPressed()
+    {
+      if (IsCooldown())
+        return;
+      
+      Move(-transform.right);
+      LeftEngineFx.Play();
+    }
+    
+    private void OnDownPressed()
+    {
+      if (IsCooldown())
+        return;
+      
+      Move(transform.right);
+      RightEngineFx.Play();
     }
 
     private void Move(Vector3 moveDirection)

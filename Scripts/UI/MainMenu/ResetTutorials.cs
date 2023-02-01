@@ -6,10 +6,10 @@ namespace StarGravity.UI.MainMenu
 {
   public class ResetTutorials : MonoBehaviour
   {
-    private ProgressService _progressService;
+    private IProgressService _progressService;
 
     [Inject]
-    public void Construct(ProgressService progressService)
+    public void Construct(IProgressService progressService)
     {
       _progressService = progressService;
     }

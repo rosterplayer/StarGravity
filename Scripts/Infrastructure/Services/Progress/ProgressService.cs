@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StarGravity.Infrastructure.Services.Progress
 {
-  public class ProgressService
+  public class ProgressService : IProgressService
   {
     private const string PlayerProgressKey = "PlayerProgress";
     private UserData _userData;

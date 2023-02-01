@@ -3,6 +3,7 @@ using StarGravity.GamePlay.Planets;
 using StarGravity.GamePlay.Player.Perks;
 using StarGravity.GamePlay.Routes;
 using StarGravity.Infrastructure.AssetManagement;
+using StarGravity.Infrastructure.ECS;
 using StarGravity.Infrastructure.Factories;
 using StarGravity.Infrastructure.Services.Input;
 using StarGravity.Infrastructure.Services.Progress;
@@ -27,12 +28,13 @@ namespace StarGravity.Infrastructure.Scopes
             builder.RegisterComponentInNewPrefab(UfoSpawner, Lifetime.Scoped);
             builder.RegisterComponentInHierarchy<InputService>().As<IInputService>();
             RegisterCaptureBeamFactory(builder);
-            builder.Register<PlayerShipFactory>(Lifetime.Scoped);
-            builder.Register<GameObjectFactory>(Lifetime.Scoped);
-            builder.Register<PopupFactory>(Lifetime.Scoped);
+            builder.Register<IPlayerShipFactory, PlayerShipFactory>(Lifetime.Scoped);
+            builder.Register<IGameObjectFactory, GameObjectWithEcsFactory>(Lifetime.Scoped);
+            builder.Register<IPopupFactory, PopupFactory>(Lifetime.Scoped);
             builder.Register<PlanetSpawner>(Lifetime.Scoped);
-            builder.Register<GameLevelProgressService>(Lifetime.Scoped);
+            builder.Register<IGameLevelProgressService, GameLevelProgressService>(Lifetime.Scoped);
 
+            builder.RegisterEntryPoint<EcsGameStartup>(Lifetime.Scoped);
             builder.RegisterEntryPoint<Game>(Lifetime.Scoped);
         }
 

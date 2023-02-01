@@ -1,7 +1,13 @@
-﻿using StarGravity.Infrastructure.AssetManagement;
+﻿using Leopotam.Ecs;
+using StarGravity.GamePlay.Common.Components;
+using StarGravity.GamePlay.Planets.Components;
+using StarGravity.GamePlay.Utilities;
+using StarGravity.Infrastructure.AssetManagement;
 using StarGravity.Infrastructure.Factories;
+using StarGravity.Infrastructure.Pools;
 using StarGravity.Infrastructure.Services.StaticData;
 using UnityEngine;
+using Voody.UniLeo;
 
 namespace StarGravity.GamePlay.Planets
 {
@@ -17,16 +23,18 @@ namespace StarGravity.GamePlay.Planets
     private GameObject _currentRightPlanet;
     private int _spawnCount;
 
-    private readonly GameObjectFactory _factory;
+    private readonly IGameObjectFactory _factory;
     private readonly GamePrefabs _prefabs;
     private readonly SequenceElector _sequenceElector;
-    private readonly PoolOfGameObjects _poolOfGameObjects;
-
-    public PlanetSpawner(GameObjectFactory factory, GamePrefabs prefabs, ICollectableSequenceDataProvider sequenceDataProvider)
+    private readonly PoolOfGameObjects _poolOfStars;
+    private readonly PoolOfPlanets _poolOfPlanets;
+    
+    public PlanetSpawner(IGameObjectFactory factory, GamePrefabs prefabs, ICollectableSequenceDataProvider sequenceDataProvider)
     {
       _factory = factory;
       _prefabs = prefabs;
-      _poolOfGameObjects = new PoolOfGameObjects(_factory);
+      _poolOfStars = new PoolOfGameObjects(_factory);
+      _poolOfPlanets = new PoolOfPlanets(_factory);
       _sequenceElector = new SequenceElector(sequenceDataProvider);
     }
 
@@ -52,29 +60,28 @@ namespace StarGravity.GamePlay.Planets
 
     private void SpawnStar(Vector2 at, MovePoints movePoints)
     {
-      PlanetMove planet = _poolOfGameObjects.Get(_prefabs.GetRandomStarPrefab(), new Vector3(at.x, RandomYForStar())).GetComponent<PlanetMove>();
-      planet.SetComponent(movePoints);
-      SpawnCollectables(planet.transform.position);
+      GameObject randomStarPrefab = _prefabs.GetRandomStarPrefab();
+      SpawnStar(randomStarPrefab, at, movePoints);
     }
-    
+
     private void SpawnStar(GameObject prefab, Vector2 at, MovePoints movePoints)
     {
-      PlanetMove planet = _poolOfGameObjects.Get(prefab, new Vector3(at.x, RandomYForStar())).GetComponent<PlanetMove>();
-      planet.SetComponent(movePoints);
+      GameObject planet = _poolOfStars.Get(prefab, new Vector3(at.x, RandomYForStar()));
+      SetEcsComponent(planet, movePoints);
       SpawnCollectables(planet.transform.position);
     }
 
     private GameObject SpawnPlanet(Vector2 at, MovePoints movePoints)
     {
-      GameObject spawnPlanet = _factory.CreatePlanet(_prefabs.GetRandomPlanetPrefab(), new Vector3(at.x, RandomYForPlanet()));
-      spawnPlanet.GetComponent<PlanetMove>().SetComponent(movePoints);
+      GameObject spawnPlanet = _poolOfPlanets.Get(_prefabs.GetRandomPlanetPrefab(), new Vector3(at.x, RandomYForPlanet()));
+      SetEcsComponent(spawnPlanet, movePoints);
       return spawnPlanet;
     }
 
     private GameObject SpawnReachedPlanet(Vector2 at, MovePoints movePoints)
     {
-      GameObject planet = _factory.CreateReachedPlanet(_prefabs.GetRandomPlanetPrefab(), new Vector3(at.x, RandomYForPlanet()));
-      planet.GetComponent<PlanetMove>().SetComponent(movePoints);
+      GameObject planet = SpawnPlanet(at, movePoints);
+      planet.GetComponentInChildren<Destination>().MakeReached();
       return planet;
     }
 
@@ -82,6 +89,17 @@ namespace StarGravity.GamePlay.Planets
     {
       var collectablePrefab = _sequenceElector.Elect(_currentLeftPlanet.transform.position, starPosition,_currentRightPlanet.transform.position);
       _factory.CreateCollectablesSequence(collectablePrefab, starPosition);
+    }
+
+    private static void SetEcsComponent(GameObject planet, MovePoints movePoints)
+    {
+      if (planet.GetComponent<ConvertToEntity>().TryGetEcsEntity(out EcsEntity entity))
+      {
+        ref var movablePlanet = ref entity.Get<MovablePlanet>();
+        movablePlanet.MovePoints = movePoints;
+        entity.Del<NotActive>();
+        entity.Del<IsMoving>();
+      }
     }
 
     private MovePoints CreateMovePoints(float originX, int length)

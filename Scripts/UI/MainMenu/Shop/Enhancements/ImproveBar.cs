@@ -24,11 +24,11 @@ namespace StarGravity.UI.MainMenu.Shop.Enhancements
     [SerializeField] private Button _improveButton;
     
     private ISDKWrapper _sdk;
-    private ProgressService _progress;
+    private IProgressService _progress;
     private GameParameters _gameParameters;
 
     [Inject]
-    public void Construct(ISDKWrapper sdkWrapper, ProgressService progressService, GameParameters gameParameters)
+    public void Construct(ISDKWrapper sdkWrapper, IProgressService progressService, GameParameters gameParameters)
     {
       _gameParameters = gameParameters;
       _progress = progressService;

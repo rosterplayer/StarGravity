@@ -16,11 +16,11 @@ namespace StarGravity.UI
     public DynamicLocalizationText DetailsStars;
     public DynamicLocalizationText DetailsBonuses;
     
-    private GameLevelProgressService _levelProgressService;
-    private ProgressService _progress;
+    private IGameLevelProgressService _levelProgressService;
+    private IProgressService _progress;
 
     [Inject]
-    public void Construct(GameLevelProgressService levelProgressService, ProgressService progress)
+    public void Construct(IGameLevelProgressService levelProgressService, IProgressService progress)
     {
       _progress = progress;
       _levelProgressService = levelProgressService;

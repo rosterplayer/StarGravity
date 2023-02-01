@@ -4,7 +4,7 @@ using StarGravity.Infrastructure.Services.Sound;
 
 namespace StarGravity.Infrastructure.Services.Ad
 {
-  public class AdService
+  public class AdService : IAdService
   {
     private const int Attempts = 10;
     private const int RestartsToShowAd = 3;
@@ -34,16 +34,6 @@ namespace StarGravity.Infrastructure.Services.Ad
       _sdk.OnAdRewardedError += SwitchOnSound;
     }
 
-    private void SwitchOnSound()
-    {
-      _soundService.UnpauseSound();
-    }
-
-    private void SwitchOffSound()
-    {
-      _soundService.PauseSound();
-    }
-
     public bool IsRewardedBonusActive() => 
       _rewardedAdBonusCounter >= 0;
 
@@ -71,6 +61,16 @@ namespace StarGravity.Infrastructure.Services.Ad
       }
       //SetBonusOnRewardedAd();
       _sdk.ShowRewardedAd();
+    }
+
+    private void SwitchOnSound()
+    {
+      _soundService.UnpauseSound();
+    }
+
+    private void SwitchOffSound()
+    {
+      _soundService.PauseSound();
     }
 
     private void SetBonusOnRewardedAd()

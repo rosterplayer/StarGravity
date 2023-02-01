@@ -4,12 +4,13 @@ using VContainer;
 
 namespace StarGravity.GamePlay.Planets
 {
-  public class Destination : MonoBehaviour
+  public class Destination : MonoBehaviour, IResetable
   {
+    [SerializeField] private Collider2D _collider;
+    
     private bool _reached;
     private PlanetSpawner _planetSpawner;
-    private Collider2D _collider;
-    
+
     public bool Reached => _reached;
 
     [Inject]
@@ -18,18 +19,15 @@ namespace StarGravity.GamePlay.Planets
       _planetSpawner = planetSpawner;
     }
 
-    private void Awake()
-    {
-      _collider = GetComponent<Collider2D>();
-    }
-
     public void MakeReached()
     {
       _reached = true;
     }
 
-    public void SwitchOnCollider() => _collider.enabled = true;
-    public void SwitchOffCollider() => _collider.enabled = false;
+    public void Reset()
+    {
+      _reached = false;
+    }
 
     public void SwitchOnColliderWithDelay()
     {
@@ -38,10 +36,20 @@ namespace StarGravity.GamePlay.Planets
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-      if (_reached || !col.collider.CompareTag("Player"))
+      if (!col.collider.CompareTag("Player"))
         return;
       
-      _planetSpawner.SpawnNext();
+      SwitchOffCollider();
+
+      if (!_reached)
+      {
+        //MakeReached();
+        _planetSpawner.SpawnNext();
+      }
     }
+
+    private void SwitchOnCollider() => _collider.enabled = true;
+
+    private void SwitchOffCollider() => _collider.enabled = false;
   }
 }

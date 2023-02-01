@@ -7,12 +7,12 @@ namespace StarGravity.Infrastructure.Services.Tutorial
 {
   public class TutorialService
   {
-    private readonly ProgressService _progress;
-    private readonly PopupFactory _popupFactory;
+    private readonly IProgressService _progress;
+    private readonly IPopupFactory _popupFactory;
     private readonly GamePrefabs _gamePrefabs;
     private ISDKWrapper _sdk;
 
-    public TutorialService(ProgressService progress, PopupFactory popupFactory, GamePrefabs gamePrefabs, ISDKWrapper sdk)
+    public TutorialService(IProgressService progress, IPopupFactory popupFactory, GamePrefabs gamePrefabs, ISDKWrapper sdk)
     {
       _sdk = sdk;
       _progress = progress;

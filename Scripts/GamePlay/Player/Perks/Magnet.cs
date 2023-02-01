@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using StarGravity.GamePlay.Interactables;
+using StarGravity.GamePlay.Interactables.Bonuses;
 using UnityEngine;
 
 namespace StarGravity.GamePlay.Player.Perks

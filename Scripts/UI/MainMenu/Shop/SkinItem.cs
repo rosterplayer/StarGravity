@@ -26,12 +26,12 @@ namespace StarGravity.UI.MainMenu.Shop
     private ItemsContainer _container;
 
     private ISDKWrapper _sdk;
-    private ProgressService _progress;
+    private IProgressService _progress;
     private GameParameters _gameParams;
     private IInAppService _inAppService;
 
     [Inject]
-    public void Construct(ISDKWrapper sdkWrapper, ProgressService progressService, GameParameters gameParameters, IInAppService inAppService)
+    public void Construct(ISDKWrapper sdkWrapper, IProgressService progressService, GameParameters gameParameters, IInAppService inAppService)
     {
       _sdk = sdkWrapper;
       _progress = progressService;

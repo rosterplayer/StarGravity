@@ -8,7 +8,7 @@ using VContainer.Unity;
 
 namespace StarGravity.Infrastructure.Factories
 {
-  public class PopupFactory
+  public class PopupFactory : IPopupFactory
   {
     private readonly IObjectResolver _container;
     private readonly GamePrefabs _gamePrefabs;

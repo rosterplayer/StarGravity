@@ -9,7 +9,7 @@ namespace StarGravity.UI.MainMenu.Shop
     private IInAppService _inAppService;
 
     [Inject]
-    public void Construct(ProgressService progress, IInAppService inAppService)
+    public void Construct(IProgressService progress, IInAppService inAppService)
     {
       base.Construct(progress);
       _inAppService = inAppService;

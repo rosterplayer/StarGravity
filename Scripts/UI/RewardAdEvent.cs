@@ -10,10 +10,10 @@ namespace StarGravity.UI
   [RequireComponent(typeof(PopupOpener))]
   public class RewardAdEvent : MonoBehaviour
   {
-    private AdService _adService;
+    private IAdService _adService;
 
     [Inject]
-    public void Construct(AdService adService)
+    public void Construct(IAdService adService)
     {
       _adService = adService;
     }

@@ -5,11 +5,9 @@ using UnityEngine;
 
 namespace StarGravity.Infrastructure.Services.Progress
 {
-  public class GameLevelProgressService
+  public class GameLevelProgressService : IGameLevelProgressService
   {
-    private StarShip _player;
-
-    public GameLevelProgressData LevelProgress { get; set; }
+    public GameLevelProgressData LevelProgress { get; }
 
     public event Action ProgressChanged;
 
@@ -18,27 +16,19 @@ namespace StarGravity.Infrastructure.Services.Progress
       LevelProgress = new GameLevelProgressData();
     }
 
-    public void Subscribe(StarShip playerShip)
-    {
-      _player = playerShip;
-      _player.PlanetReached += OnPlanetReached;
-      _player.BonusCollected += OnBonusCollected;
-      _player.ShipBonusCollected += OnShipBonusCollected;
-    }
-
-    private void OnBonusCollected(int bonusValue)
+    public void OnStarBonusCollected(int bonusValue)
     {
       LevelProgress.PlusBonus(bonusValue);
       ProgressChanged?.Invoke();
     }
 
-    private void OnPlanetReached(GameObject planet)
+    public void OnNewPlanetReached()
     {
       LevelProgress.PlusSystem();
       ProgressChanged?.Invoke();
     }
 
-    private void OnShipBonusCollected()
+    public void OnShipBonusCollected()
     {
       LevelProgress.PlusShipBonus();
       ProgressChanged?.Invoke();

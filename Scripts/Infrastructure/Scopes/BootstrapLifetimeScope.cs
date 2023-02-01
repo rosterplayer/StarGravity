@@ -28,11 +28,11 @@ namespace StarGravity.Infrastructure.Scopes
             builder.Register<ICollectableSequenceDataProvider, CollectableSequenceDataProvider>(Lifetime.Singleton);
             RegisterSoundService(builder);
             Instantiate(SDKListenerPrefab).name = "YandexSDK";
-            builder.Register<LocalizationService>(Lifetime.Singleton);
-            builder.Register<ProgressService>(Lifetime.Singleton);
+            builder.Register<ILocalizationService, LocalizationService>(Lifetime.Singleton);
+            builder.Register<IProgressService, ProgressService>(Lifetime.Singleton);
             builder.Register<ISDKWrapper, YandexPlatformSDKWrapper>(Lifetime.Singleton);
-            builder.Register<AdService>(Lifetime.Singleton);
-            builder.RegisterEntryPoint<GamePresenter>();
+            builder.Register<IAdService, AdService>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<Bootstrapper>();
         }
 
         private void RegisterSoundService(IContainerBuilder builder)

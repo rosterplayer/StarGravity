@@ -5,15 +5,20 @@ using VContainer;
 namespace StarGravity.GamePlay.Planets
 {
   [RequireComponent(typeof(Rotator))]
-  public class RotatorSpeedIncrement : MonoBehaviour
+  public class RotatorSpeedIncrement : MonoBehaviour, IResetable
   {
     [SerializeField] private Rotator _rotator;
-    private GameLevelProgressService _levelProgressService;
+    private IGameLevelProgressService _levelProgressService;
 
     [Inject]
-    public void Construct(GameLevelProgressService levelProgress)
+    public void Construct(IGameLevelProgressService levelProgress)
     {
       _levelProgressService = levelProgress;
+      AdjustMaxRotatorSpeed();
+    }
+
+    public void Reset()
+    {
       AdjustMaxRotatorSpeed();
     }
 

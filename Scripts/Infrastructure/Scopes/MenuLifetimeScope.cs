@@ -12,7 +12,7 @@ namespace StarGravity.Infrastructure.Scopes
         protected override void Configure(IContainerBuilder builder)
         {
             RegisterMainCanvas(builder);
-            builder.Register<PopupFactory>(Lifetime.Scoped);
+            builder.Register<IPopupFactory, PopupFactory>(Lifetime.Scoped);
             builder.Register<IInAppService, InAppService>(Lifetime.Scoped);
             builder.RegisterEntryPoint<MenuPresenter>();
         }

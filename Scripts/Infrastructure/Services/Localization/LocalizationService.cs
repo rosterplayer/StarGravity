@@ -3,7 +3,7 @@ using UnityEngine.Localization.Settings;
 
 namespace StarGravity.Infrastructure.Services.Localization
 {
-  public class LocalizationService
+  public class LocalizationService : ILocalizationService
   {
     public async void ChangeLocale(string language)
     {

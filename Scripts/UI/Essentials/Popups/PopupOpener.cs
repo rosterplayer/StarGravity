@@ -8,12 +8,12 @@ namespace StarGravity.UI.Essentials.Popups
   public class PopupOpener : MonoBehaviour
   {
     public GameObject popupPrefab;
-
-    [SerializeField] protected Canvas _canvas;
-    protected PopupFactory _factory;
+    [SerializeField] private Canvas _canvas;
+    
+    private IPopupFactory _factory;
 
     [Inject]
-    public void Construct(PopupFactory factory)
+    public void Construct(IPopupFactory factory)
     {
       _factory = factory;
     }

@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
+using StarGravity.GamePlay.Common;
 using StarGravity.GamePlay.Interactables;
+using StarGravity.GamePlay.Interactables.Bonuses;
 using StarGravity.GamePlay.Planets;
+using StarGravity.GamePlay.Planets.Components;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
 namespace StarGravity.Infrastructure.Factories
 {
-  public class GameObjectFactory
+  public class GameObjectFactory : IGameObjectFactory
   {
     private readonly IObjectResolver _container;
     private readonly List<GameObject> _flyingBonuses = new();
@@ -19,17 +22,12 @@ namespace StarGravity.Infrastructure.Factories
       _container = container;
     }
 
-    public GameObject CreatePlanet(GameObject prefab, Vector3 at) => 
-      _container.Instantiate(prefab, at, Quaternion.identity);
-
-    public GameObject CreateReachedPlanet(GameObject prefab, Vector3 at)
+    public GameObject CreateStarOrPlanet(GameObject prefab, Vector3 at)
     {
-      GameObject go = CreatePlanet(prefab, at);
-      go.GetComponentInChildren<Destination>().MakeReached();
-      return go;
+      return _container.Instantiate(prefab, at, Quaternion.identity);
     }
 
-    public GameObject CreateGameObject(GameObject prefab, Vector3 at)
+    public GameObject CreateInteractableGameObject(GameObject prefab, Vector3 at)
     {
       GameObject gameObject = _container.Instantiate(prefab, at, Quaternion.identity);
       if (gameObject.TryGetComponent(out Bonus _))

@@ -13,14 +13,13 @@ namespace StarGravity.UI.MainMenu
   {
     public TextMeshProUGUI BestScore;
 
-    private Canvas _canvas;
     private ISDKWrapper _sdk;
-    private ProgressService _progress;
-    private PopupFactory _popupFactory;
+    private IProgressService _progress;
+    private IPopupFactory _popupFactory;
     private GamePrefabs _prefabs;
 
     [Inject]
-    public void Construct(ISDKWrapper sdkWrapper, ProgressService progress, PopupFactory popupFactory, GamePrefabs prefabs)
+    public void Construct(ISDKWrapper sdkWrapper, IProgressService progress, IPopupFactory popupFactory, GamePrefabs prefabs)
     {
       _prefabs = prefabs;
       _popupFactory = popupFactory;

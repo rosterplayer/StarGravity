@@ -3,7 +3,7 @@ using Random = UnityEngine.Random;
 
 namespace StarGravity.GamePlay.Planets
 {
-    public class Rotator : MonoBehaviour
+    public class Rotator : MonoBehaviour, IResetable
     {
         public float MaxRotateSpeed;
         public float MinRotateSpeed;
@@ -19,13 +19,7 @@ namespace StarGravity.GamePlay.Planets
 
         private void Start()
         {
-            AssignRotationSpeed();
-            
-            if (!RotateOnStart) 
-                return;
-            
-            AssignAngularDirection(0);
-            _rotate = true;
+            Reset();
         }
 
         private void Update()
@@ -42,6 +36,20 @@ namespace StarGravity.GamePlay.Planets
                 AssignAngularDirection(rotationDirection);
                 _rotate = true;
             }
+        }
+
+        public void Reset()
+        {
+            AssignRotationSpeed();
+
+            if (!RotateOnStart)
+            {
+                _rotate = false;
+                return;
+            }
+            
+            AssignAngularDirection(0);
+            _rotate = true;
         }
 
         private void AssignRotationSpeed() => 
